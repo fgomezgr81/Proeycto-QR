@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qrscan/bloc/scan_bloc.dart';
+import 'package:qrscan/models/scan_model.dart';
 import 'package:qrscan/pages/direcciones_page.dart';
 import 'package:qrscan/pages/mapas_page.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _scansBloc = new ScansBloc();
   int _currentPage = 0;
 
   @override
@@ -21,7 +23,9 @@ class _HomePageState extends State<HomePage> {
             color: Colors.red,
             size: 30,
           ),
-          onPressed: () {},
+          onPressed: () {
+            _scansBloc.borrarAllScan();
+          },
         ),
       ]),
       body: _callPage(_currentPage),
@@ -35,18 +39,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future _scanQR() async {
-    dynamic futureString;
+    dynamic futureString = "http://fernando-herrera.com";
 
-    try {
-      futureString = await BarcodeScanner.scan();
-    } catch (e) {
-      futureString = e.toString();
-    }
+    // try {
+    //   futureString = await BarcodeScanner.scan();
+    // } catch (e) {
+    //   futureString = e.toString();
+    // }
 
-    print('future string : $futureString');
+    // print('future string : $futureString');
 
     if (futureString != null) {
-      print('tenemos informacion');
+      final scan = ScanModel(valor: futureString);
+      _scansBloc.agregarScans(scan);
+      final scan2 =
+          ScanModel(valor: 'geo:40.724233047051705,-74.00731459101564');
+      _scansBloc.agregarScans(scan2);
     }
   }
 
